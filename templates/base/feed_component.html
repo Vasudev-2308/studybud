@@ -1,0 +1,23 @@
+{% block content %}
+<div>
+  {% if request.user.username == 'admin' %}
+  <a href="{% url 'createroom' %}">Create Room</a>
+  {% endif %} {% for room in rooms %}
+  <div>
+    {% if request.user.username == 'admin' %}
+    <a href="{% url 'update' room.id %}">Edit Room</a>
+    <a href="{% url 'delete' room.id %}">Delete Room</a>
+    {% else %}
+    <div></div>
+    {% endif %}
+    <a href="{% url 'profile' room.host.id %}">@{{room.host.username }}</a>
+    <h5>
+      {% if request.user.is_authenticated %}
+      <a href="{% url 'room' room.id %}"> {{room.name}} </a>
+      {% else %} {{room.name}} {% endif %}
+    </h5>
+  </div>
+  <hr />
+  {% endfor %}
+</div>
+{% endblock %}
