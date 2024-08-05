@@ -98,47 +98,41 @@ def userProfile(request, pk):
 
 @login_required(login_url="/login")
 def create_room(req):
-    if req.user.username == 'admin':
-        form = RoomForm()
-        if req.method == 'POST':
-            form = RoomForm(req.POST)
-            if form.is_valid():
-                form.save()
-                return redirect('home')
+    form = RoomForm()
+    if req.method == 'POST':
+        form = RoomForm(req.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('home')
 
         context = {'form': form}
         return render(req, 'base/room_form.html', context)
-    else:
-        return render(req, 'home')
+    return render(req, 'home')
 
 @login_required(login_url="/login")
 def updateRoom(req, pk):
-    if req.user.username == 'admin':
-        room = Room.objects.get(id=pk)
-        form = RoomForm(instance=room)
-
-        if req.method == 'POST':
-            form = RoomForm(req.POST, instance=room)
-            if form.is_valid():
-                form.save()
-                return redirect('home')
-        
-        context = {'form':form}
-        return render(req, 'base/room_form.html', context)
-    else:
-        return render(req, 'home')
     
+    room = Room.objects.get(id=pk)
+    form = RoomForm(instance=room)
+
+    if req.method == 'POST':
+        form = RoomForm(req.POST, instance=room)
+        if form.is_valid():
+            form.save()
+            return redirect('home')
+    context = {'form':form}
+    return render(req, 'base/room_form.html', context)
+        
 
 @login_required(login_url="/login")
 def deleteRoom(req, pk):
-    if req.user.username == 'admin':
-        room = Room.objects.get(id=pk)
-        if req.method == 'POST':
-            room.delete()
-            return redirect('home')
-        return render(req, 'base/delete.html', {'obj': room})
-    else:
-        return render(req, 'home')
+    
+    room = Room.objects.get(id=pk)
+    if req.method == 'POST':
+        room.delete()
+        return redirect('home')
+    return render(req, 'base/delete.html', {'obj': room})
+    
 
 @login_required(login_url="/login") 
 def deleteComment(req, pk):

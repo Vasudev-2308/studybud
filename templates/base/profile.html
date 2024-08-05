@@ -1,17 +1,65 @@
-<style>
-  .profile-container {
-    display: grid;
-    grid-template-columns: 1fr 3fr 1fr;
-  }
-</style>
+{% extends 'main.html' %} {% block content %}
+<!DOCTYPE html>
+<html lang="en">
 
-{% extends "main.html" %} {%block content%}
-<h1>{{user}}</h1>
-<div class="profile-container">
-  <div>{% include 'base/topic_component.html'%}</div>
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="shortcut icon" href="assets/favicon.ico" type="image/x-icon" />
+  <link rel="stylesheet" href="style.css" />
+  <title>StudyBuddy - Find study partners around the world!</title>
+</head>
 
-  <div>{% include 'base/feed_component.html'%}</div>
+<body>
+  <main class="profile-page layout layout--3">
+    <div class="container">
+      <!-- Topics Start -->
+      {% include 'base/topic_component.html'%}
+      <!-- Topics End -->
 
-  <div>{% include 'base/activity_feed.html'%}</div>
-</div>
+      <!-- Room List Start -->
+      <div class="roomList">
+        <div class="profile">
+          <div class="profile__avatar">
+            <div class="avatar avatar--large active">
+              <img src="https://randomuser.me/api/portraits/men/11.jpg" />
+            </div>
+          </div>
+          <div class="profile__info">
+            <h3>{{user.username}}</h3>
+            <p>@{{user.username}}</p>
+            <a href="edit-user.html" class="btn btn--main btn--pill">Edit Profile</a>
+          </div>
+          <div class="profile__about">
+            <h3>About</h3>
+            <p>
+              Lorem ipsum dolor sit amet consectetur adipisicing elit. Consequuntur illo tenetur
+              facilis sunt nemo debitis quisquam hic atque aut? Ducimus alias placeat optio
+              accusamus repudiandae quis ab ex exercitationem rem?
+            </p>
+          </div>
+        </div>
+
+        <div class="roomList__header">
+          <div>
+            <h2>Study Rooms Hosted by {{user}}</a>
+            </h2>
+          </div>
+        </div>
+        <div>{% include 'base/feed_component.html'%}</div>
+      </div>
+      <!-- Room List End -->
+
+      <!-- Activities Start -->
+      <div class="activities">
+        <div class="activities__header">
+          <h2>Recent Activities</h2>
+        </div>
+       <div>{% include 'base/activity_feed.html' %}</div>
+      </div>
+      <!-- Activities End -->
+    </div>
+  </main>
+
 {% endblock %}

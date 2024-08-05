@@ -35,8 +35,7 @@
           <h2>Study Room</h2>
           <p>{{room_count}} Rooms Available</p>
         </div>
-        {% if request.user.username == 'admin'%}
-        <a class="btn btn--main" href="create-room.html">
+        <a class="btn btn--main" href="{% url 'createroom' %}">
           <svg
             version="1.1"
             xmlns="http://www.w3.org/2000/svg"
@@ -51,7 +50,6 @@
           </svg>
           Create Room
         </a>
-        {% endif %}
       </div>
       {% include 'base/feed_component.html' %}
     </div>
