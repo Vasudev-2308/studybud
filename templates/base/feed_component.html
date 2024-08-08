@@ -1,7 +1,7 @@
 {% for room in rooms %}
 <div class="roomListRoom">
   <div class="roomListRoom__header">
-    <a href="{% url 'profile' room.host.id %}">
+    <a href="{% url 'user' room.host.id %}">
        <class="roomListRoom__author">
       <div class="avatar avatar--small">
         <img src="https://randomuser.me/api/portraits/women/11.jpg" />

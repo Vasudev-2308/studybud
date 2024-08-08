@@ -67,7 +67,7 @@ def home(req):
     topics = Topic.objects.all()[0:5]
     room_count = rooms.count()
     room_messages = Message.objects.filter(Q(room__topic__name__icontains=q))[0:3]
-
+    #print(rooms[0].host.pk)
     context = {'rooms': rooms, 'topics': topics, 'room_count': room_count, 'room_messages': room_messages}
     return render(req, 'base/home.html', context)
 
@@ -96,20 +96,27 @@ def userProfile(request, pk):
                'topics': topics, 'room_messages': room_messages}
     return render(request, 'base/profile.html', context)
 
-@login_required(login_url="/login")
+@login_required(login_url="login")
 def create_room(req):
     form = RoomForm()
+    topics = Topic.objects.all()
     if req.method == 'POST':
-        form = RoomForm(req.POST)
-        if form.is_valid():
-            form.save()
-            return redirect('home')
+        topic_name = req.POST.get('topic')
+        topic, created = Topic.objects.get_or_create(name=topic_name)
 
-        context = {'form': form}
-        return render(req, 'base/room_form.html', context)
-    return render(req, 'home')
+        Room.objects.create(
+            host=req.user,
+            topic=topic,
+            name=req.POST.get('name'),
+            desc=req.POST.get('desc'),
+        )
+        return redirect('home')
 
-@login_required(login_url="/login")
+    context = {'form': form, 'topics': topics}
+    return render(req, 'base/room_form.html', context)
+
+
+@login_required(login_url="login")
 def updateRoom(req, pk):
     
     room = Room.objects.get(id=pk)
