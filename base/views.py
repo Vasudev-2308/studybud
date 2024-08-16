@@ -6,7 +6,7 @@ from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.decorators import login_required
 from django.db.models import Q
 from .models import Room, Topic, User, Message
-from .forms import RoomForm
+from .forms import RoomForm, UserForm
 
 # Create your views here.
 
@@ -124,10 +124,14 @@ def updateRoom(req, pk):
 
     if req.method == 'POST':
         form = RoomForm(req.POST, instance=room)
-        if form.is_valid():
-            form.save()
-            return redirect('home')
-    context = {'form':form}
+        topic_name = req.POST.get('topic')
+        topic, created = Topic.objects.get_or_create(name=topic_name)
+        room.name = req.POST.get('name')
+        room.topic = topic
+        room.desc = req.POST.get('desc')
+        room.save()
+        return redirect('home')
+    context = {'form':form, 'room': room}
     return render(req, 'base/room_form.html', context)
         
 
@@ -151,3 +155,17 @@ def deleteComment(req, pk):
         message.delete()
         return redirect('home')
     return render(req, 'base/delete.html', {'obj': message})
+
+@login_required(login_url="/login")
+def updateUser(req):
+    user = req.user
+    form = UserForm(instance=user)
+
+    if req.method == 'POST':
+        form = UserForm(req.POST, instance=user)
+        if form.is_valid():
+            form.save()
+            redirect('user', pk = user.id)
+        else:
+            print(form.errors)
+    return render(req, 'base/update_user.html', {'form': form})
