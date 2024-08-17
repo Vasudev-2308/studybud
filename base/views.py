@@ -16,13 +16,13 @@ def loginPage(req):
         return redirect('home')
     
     if req.method == 'POST':
-        username = req.POST.get('username').lower()
+        email = req.POST.get('email').lower()
         password = req.POST.get('password')
         try:
-            user = User.objects.get(username= username)
+            user = User.objects.get(email= email)
         except:
             messages.error(req, 'User Doesnot Exist')
-        user = authenticate(req, username=username, password=password)
+        user = authenticate(req, email=email, password=password)
         if user  is not None:
             login(req, user)
             return redirect('home')
