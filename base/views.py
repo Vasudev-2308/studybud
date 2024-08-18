@@ -6,7 +6,7 @@ from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.decorators import login_required
 from django.db.models import Q
 from .models import Room, Topic, User, Message
-from .forms import RoomForm, UserForm
+from .forms import RoomForm, UserForm, MyUserCreationForm
 
 # Create your views here.
 
@@ -18,26 +18,29 @@ def loginPage(req):
     if req.method == 'POST':
         email = req.POST.get('email').lower()
         password = req.POST.get('password')
+
         try:
-            user = User.objects.get(email= email)
+            user = User.objects.get(email=email)
         except:
-            messages.error(req, 'User Doesnot Exist')
+            messages.error(req, 'User does not exist')
+
         user = authenticate(req, email=email, password=password)
-        if user  is not None:
+
+        if user is not None:
             login(req, user)
             return redirect('home')
         else:
-            messages.error(req, 'Username/Password Doesnot Exist')
+            messages.error(req, 'Username OR password does not exit')
 
     context={'page':page}
     return render(req, 'base/login_page.html', context)
 
 def registerUser(req):
     page = 'register'
-    form = UserCreationForm()
+    form = MyUserCreationForm()
 
     if req.method == 'POST':
-        form = UserCreationForm(req.POST)
+        form = MyUserCreationForm(req.POST)
         print(form)
         if form.is_valid():
             user = form.save(commit=False)
@@ -162,7 +165,7 @@ def updateUser(req):
     form = UserForm(instance=user)
 
     if req.method == 'POST':
-        form = UserForm(req.POST, instance=user)
+        form = UserForm(req.POST, req.FILES, instance=user)
         if form.is_valid():
             form.save()
             return redirect('user', pk = user.id)
